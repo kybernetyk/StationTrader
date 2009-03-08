@@ -19,6 +19,10 @@
 		03096A600F5B490500BBD2FC /* backdrop3.png in Resources */ = {isa = PBXBuildFile; fileRef = 03096A5D0F5B490500BBD2FC /* backdrop3.png */; };
 		03096A9A0F5B4A7B00BBD2FC /* backdrop5.png in Resources */ = {isa = PBXBuildFile; fileRef = 03096A990F5B4A7B00BBD2FC /* backdrop5.png */; };
 		036044900F5BADFA003E04FF /* calcbutton.png in Resources */ = {isa = PBXBuildFile; fileRef = 0360448F0F5BADFA003E04FF /* calcbutton.png */; };
+		0362A3A90F638FBB004A1020 /* CustomTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 0362A3A80F638FBB004A1020 /* CustomTableViewCell.m */; };
+		03C10FD40F63764900D03F77 /* ProfilesController.m in Sources */ = {isa = PBXBuildFile; fileRef = 03C10FD30F63764900D03F77 /* ProfilesController.m */; };
+		03C10FF30F63776F00D03F77 /* ProfileView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 03C10FF20F63776F00D03F77 /* ProfileView.xib */; };
+		03C111740F638B5200D03F77 /* TableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 03C111730F638B5200D03F77 /* TableViewCell.xib */; };
 		1D3623260D0F684500981E51 /* EveTraderAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 1D3623250D0F684500981E51 /* EveTraderAppDelegate.m */; };
 		1D60589B0D05DD56006BFB54 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 29B97316FDCFA39411CA2CEA /* main.m */; };
 		1D60589F0D05DD5A006BFB54 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D30AB110D05D00D00671497 /* Foundation.framework */; };
@@ -43,6 +47,12 @@
 		03096A5D0F5B490500BBD2FC /* backdrop3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = backdrop3.png; sourceTree = "<group>"; };
 		03096A990F5B4A7B00BBD2FC /* backdrop5.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = backdrop5.png; sourceTree = "<group>"; };
 		0360448F0F5BADFA003E04FF /* calcbutton.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = calcbutton.png; sourceTree = "<group>"; };
+		0362A3A70F638FBB004A1020 /* CustomTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CustomTableViewCell.h; sourceTree = "<group>"; };
+		0362A3A80F638FBB004A1020 /* CustomTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CustomTableViewCell.m; sourceTree = "<group>"; };
+		03C10FD20F63764900D03F77 /* ProfilesController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProfilesController.h; sourceTree = "<group>"; };
+		03C10FD30F63764900D03F77 /* ProfilesController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProfilesController.m; sourceTree = "<group>"; };
+		03C10FF20F63776F00D03F77 /* ProfileView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ProfileView.xib; sourceTree = "<group>"; };
+		03C111730F638B5200D03F77 /* TableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TableViewCell.xib; sourceTree = "<group>"; };
 		1D30AB110D05D00D00671497 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		1D3623240D0F684500981E51 /* EveTraderAppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EveTraderAppDelegate.h; sourceTree = "<group>"; };
 		1D3623250D0F684500981E51 /* EveTraderAppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EveTraderAppDelegate.m; sourceTree = "<group>"; };
@@ -80,6 +90,10 @@
 				0309682D0F5B245000BBD2FC /* AboutController.m */,
 				1D3623240D0F684500981E51 /* EveTraderAppDelegate.h */,
 				1D3623250D0F684500981E51 /* EveTraderAppDelegate.m */,
+				03C10FD20F63764900D03F77 /* ProfilesController.h */,
+				03C10FD30F63764900D03F77 /* ProfilesController.m */,
+				0362A3A70F638FBB004A1020 /* CustomTableViewCell.h */,
+				0362A3A80F638FBB004A1020 /* CustomTableViewCell.m */,
 			);
 			path = Classes;
 			sourceTree = "<group>";
@@ -122,10 +136,12 @@
 				03096A5C0F5B490500BBD2FC /* backdrop2.png */,
 				03096A5D0F5B490500BBD2FC /* backdrop3.png */,
 				030969450F5B3BE900BBD2FC /* backdrop1.png */,
+				03C10FF20F63776F00D03F77 /* ProfileView.xib */,
 				030968880F5B28DC00BBD2FC /* CalculatorView.xib */,
 				030968970F5B29F200BBD2FC /* SetupView.xib */,
 				0309682A0F5B243800BBD2FC /* AboutView.xib */,
 				28AD73870D9D96C1002E5188 /* MainWindow.xib */,
+				03C111730F638B5200D03F77 /* TableViewCell.xib */,
 				8D1107310486CEB800E47090 /* Info.plist */,
 			);
 			name = Resources;
@@ -193,6 +209,8 @@
 				03096A600F5B490500BBD2FC /* backdrop3.png in Resources */,
 				03096A9A0F5B4A7B00BBD2FC /* backdrop5.png in Resources */,
 				036044900F5BADFA003E04FF /* calcbutton.png in Resources */,
+				03C10FF30F63776F00D03F77 /* ProfileView.xib in Resources */,
+				03C111740F638B5200D03F77 /* TableViewCell.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -208,6 +226,8 @@
 				0309682E0F5B245000BBD2FC /* AboutController.m in Sources */,
 				0309687B0F5B289700BBD2FC /* CalculatorController.m in Sources */,
 				030968940F5B29C100BBD2FC /* SetupController.m in Sources */,
+				03C10FD40F63764900D03F77 /* ProfilesController.m in Sources */,
+				0362A3A90F638FBB004A1020 /* CustomTableViewCell.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

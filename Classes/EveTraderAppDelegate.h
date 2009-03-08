@@ -13,7 +13,7 @@
     UITabBarController *tabBarController;
 	
 	IBOutlet UINavigationController *calcNavigationController;
-	IBOutlet UINavigationController *setupNavigationController;
+	IBOutlet UINavigationController *profilesNavigationController;
 	IBOutlet UINavigationController *aboutNavigationController;
 }
 

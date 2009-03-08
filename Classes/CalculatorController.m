@@ -7,14 +7,22 @@
 	self = [super initWithNibName: nibName bundle: nibBundle];
 	[self setTitle:@"Calculator"];
 	
-	[[NSUserDefaults standardUserDefaults] addObserver:self forKeyPath:@"brokersFee" options:NSKeyValueObservingOptionNew context: NULL];
-	[[NSUserDefaults standardUserDefaults] addObserver:self forKeyPath:@"salesTax" options:NSKeyValueObservingOptionNew context: NULL];
+//	[[NSUserDefaults standardUserDefaults] addObserver:self forKeyPath:@"brokersFee" options:NSKeyValueObservingOptionNew context: NULL];
+//	[[NSUserDefaults standardUserDefaults] addObserver:self forKeyPath:@"salesTax" options:NSKeyValueObservingOptionNew context: NULL];
 	
-	
+
+	[[NSNotificationCenter defaultCenter] addObserver: self selector:@selector(updateFeeCalculations:) name:@"profileChanged" object:nil];
 	
 	return self;
 }
+
+- (void) updateFeeCalculations: (NSNotification *)notification
+{
+	NSLog(@"profileChanged! %@",notification);
+	[self calculateBrokersFeeAndSalesTax];
 	
+}
+
 - (void) keyboardWillShowNotification: (NSNotification *)notification
 {
 	//NSLog(@"omg they did show!");	
@@ -85,7 +93,7 @@
 	[webView setDetectsPhoneNumbers: NO];
 	[webView loadHTMLString:s baseURL: nil];
 	
-	
+	[[NSNotificationCenter defaultCenter] postNotificationName:@"profileChanged" object: nil];
 	
 }
 
@@ -99,8 +107,8 @@
 	[self hideKeypad: self];
 	
 	//load salesTax and brokersFee to Labels
-	[self updateLabels];
-
+	//[self calculateBrokersFeeAndSalesTax];
+	
 }
 
 - (void)viewWillDisappear:(BOOL)animated
@@ -112,38 +120,63 @@
 }
 
 
-- (void)observeValueForKeyPath:(NSString *)keyPath
-					  ofObject:(id)object
-                        change:(NSDictionary *)change
-                       context:(void *)context
+- (void) calculateBrokersFeeAndSalesTax
 {
-	if ([keyPath isEqual:@"brokersFee"] ||
-		[keyPath isEqual:@"salesTax"])
+	NSString *activeProfileName = [[NSUserDefaults standardUserDefaults] objectForKey:@"activeProfile"];
+	NSMutableArray *profiles = [[NSUserDefaults standardUserDefaults] objectForKey:@"profiles"];
+
+	float brokerRelations = 0.0f;
+	float accounting = 0.0f;
+	float corpStanding = 0.0f;
+	float factionStanding = 0.0f;
+
+	
+	for (NSMutableDictionary *profile in profiles)
 	{
-		
-		[self updateLabels];
+		if ([activeProfileName isEqualToString: [profile objectForKey:@"name"]])
+		{
+			NSLog(@"%@",profile);
+			
+			brokerRelations = [[profile valueForKey:@"brokerRelations"] floatValue];
+			accounting = [[profile valueForKey:@"accounting"] floatValue];
+			corpStanding = [[profile valueForKey:@"corpStanding"] floatValue];
+			factionStanding = [[profile valueForKey:@"factionStanding"] floatValue];
+		}
 	}
 	
-    // be sure to call the super implementation
-    // if the superclass implements it
-    /*[super observeValueForKeyPath:keyPath
-	 ofObject:object
-	 change:change
-	 context:context];*/
+	
+	float totalSalesTax = 1.0 - (accounting*0.1);
+	
+	float e = 2.71828183;
+	float bfe_part1 = pow(e,(-0.1000 * factionStanding));
+	float bfe_part2 = pow (e,(-0.0400 * corpStanding));
+	
+	float brokers_fee_percentage = (1.000 - 0.05*brokerRelations) * bfe_part1 * bfe_part2;
+
+	brokersFee = brokers_fee_percentage;
+	salesTax = totalSalesTax;
+	
+	[self updateLabels];
+	
 }
 
 - (void) updateLabels
 {
 	//NSLog(@"Updating Labels!");
 	
-	float brokersFee = [[NSUserDefaults standardUserDefaults] floatForKey:@"brokersFee"];
-	float salesTax = [[NSUserDefaults standardUserDefaults] floatForKey:@"salesTax"];
+	//float brokersFee = [[NSUserDefaults standardUserDefaults] floatForKey:@"brokersFee"];
+	//float salesTax = [[NSUserDefaults standardUserDefaults] floatForKey:@"salesTax"];
 	
 	NSString *newCaption = [NSString stringWithFormat: @"%.4f %%", salesTax];
 	[salesTaxLabel setText: newCaption];
 
 	newCaption = [NSString stringWithFormat: @"%.4f %%", brokersFee];
 	[brokersFeeLabel setText: newCaption];
+	
+    NSString *activeProfile = [[NSUserDefaults standardUserDefaults] objectForKey:@"activeProfile"];
+	NSString *activeProfileString = [NSString stringWithFormat:@"Active Profile: %@",activeProfile];
+	
+	[activeProfileLabel setText: activeProfileString];
 }
 
 - (IBAction)doCalc:(id)sender
@@ -153,9 +186,11 @@
 	
 	[self hideKeypad: self];
 
-	float brokersFeeRate = [[NSUserDefaults standardUserDefaults] floatForKey:@"brokersFee"];
-	float salesTaxRate = [[NSUserDefaults standardUserDefaults] floatForKey:@"salesTax"];
+//	float brokersFeeRate = [[NSUserDefaults standardUserDefaults] floatForKey:@"brokersFee"];
+//	float salesTaxRate = [[NSUserDefaults standardUserDefaults] floatForKey:@"salesTax"];
 	
+	float brokersFeeRate = brokersFee;
+	float salesTaxRate = salesTax;
 	
 	float buyPrice = [[buyPriceInput text] floatValue];
 	float sellPrice = [[sellPriceInput text] floatValue];

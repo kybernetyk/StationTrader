@@ -10,6 +10,7 @@
 #import "AboutController.h"
 #import "CalculatorController.h"
 #import "SetupController.h"
+#import "ProfilesController.h"
 
 @implementation EveTraderAppDelegate
 
@@ -18,15 +19,40 @@
 
 + (void) initialize
 {
+	NSMutableArray *profiles = [NSMutableArray array];
+	
+	NSMutableDictionary *standardProfile = [NSMutableDictionary dictionary];
+	[standardProfile setValue:@"Standard" forKey: @"name"];
+	[standardProfile setValue:[NSNumber numberWithFloat: 0.0f] forKey: @"brokerRelations"];
+	[standardProfile setValue:[NSNumber numberWithFloat: 0.0f] forKey: @"accounting"];
+	[standardProfile setValue:[NSNumber numberWithFloat: 0.0f] forKey: @"corpStanding"];
+	[standardProfile setValue:[NSNumber numberWithFloat: 0.0f] forKey: @"factionStanding"];
+	[profiles addObject: standardProfile];
+
+	standardProfile = [NSMutableDictionary dictionary];
+	[standardProfile setValue:@"Jita" forKey: @"name"];
+	[standardProfile setValue:[NSNumber numberWithFloat: 5.0f] forKey: @"brokerRelations"];
+	[standardProfile setValue:[NSNumber numberWithFloat: 5.0f] forKey: @"accounting"];
+	[standardProfile setValue:[NSNumber numberWithFloat: 10.0f] forKey: @"corpStanding"];
+	[standardProfile setValue:[NSNumber numberWithFloat: 10.0f] forKey: @"factionStanding"];
+	[profiles addObject: standardProfile];
+	
+	NSLog(@"%@",profiles);
+	
 	NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
 	NSDictionary *appDefaults = [NSDictionary dictionaryWithObjectsAndKeys: 
+								 profiles, @"profiles",
+								 @"Standard", @"activeProfile",
+								 
+								//deprecated
 								 @"0.0",@"brokerRelations",
 								 @"0.0",@"accounting",
 								 @"0.0", @"corpStanding", 
 								 @"0.0", @"factionStanding", 
-							
+								 
 								 @"1.0", @"brokersFee",
 								 @"1.0", @"salesTax",
+								 
 								 nil]; 
 	[userDefaults registerDefaults:appDefaults];
 }
@@ -53,13 +79,21 @@
 	/*
 	 *	Setup View Controller setup
 	 */
-	SetupController *svc = [[SetupController alloc] initWithNibName:@"SetupView" bundle: nil];
+/*	SetupController *svc = [[SetupController alloc] initWithNibName:@"SetupView" bundle: nil];
 	dummyArray = [NSArray arrayWithObject: svc];
 	
 	[setupNavigationController setViewControllers: dummyArray];
 	[setupNavigationController setTitle:@"Setup"];
 	[[setupNavigationController navigationBar] setBarStyle: UIBarStyleBlackOpaque];
-	[setupNavigationController setNavigationBarHidden: YES];
+	[setupNavigationController setNavigationBarHidden: YES];*/
+
+	ProfilesController *pvc = [[ProfilesController alloc] initWithNibName:@"ProfileView" bundle: nil];
+	dummyArray = [NSArray arrayWithObject: pvc];
+	
+	[profilesNavigationController setViewControllers: dummyArray];
+	[profilesNavigationController setTitle:@"Profiles"];
+	[[profilesNavigationController navigationBar] setBarStyle: UIBarStyleBlackOpaque];
+	[profilesNavigationController setNavigationBarHidden: NO];
 	
 	/*
 	 *	About View Controller setup
