@@ -18,7 +18,7 @@
 
 - (void) updateFeeCalculations: (NSNotification *)notification
 {
-	NSLog(@"profileChanged! %@",notification);
+	//NSLog(@"profileChanged! %@",notification);
 	[self calculateBrokersFeeAndSalesTax];
 	
 }
@@ -93,7 +93,7 @@
 	[webView setDetectsPhoneNumbers: NO];
 	[webView loadHTMLString:s baseURL: nil];
 	
-	[[NSNotificationCenter defaultCenter] postNotificationName:@"profileChanged" object: nil];
+
 	
 }
 
@@ -105,6 +105,8 @@
 	
 	//[self showHideKeypadButton: NO];
 	[self hideKeypad: self];
+	
+	[[NSNotificationCenter defaultCenter] postNotificationName:@"profileChanged" object: nil];
 	
 	//load salesTax and brokersFee to Labels
 	//[self calculateBrokersFeeAndSalesTax];
@@ -125,33 +127,40 @@
 	NSString *activeProfileName = [[NSUserDefaults standardUserDefaults] objectForKey:@"activeProfile"];
 	NSMutableArray *profiles = [[NSUserDefaults standardUserDefaults] objectForKey:@"profiles"];
 
-	float brokerRelations = 0.0f;
-	float accounting = 0.0f;
+	if (!activeProfileName)
+		activeProfileName = @"Standard";
+	
+	int brokerRelations = 0.0f;
+	int accounting = 0.0f;
 	float corpStanding = 0.0f;
 	float factionStanding = 0.0f;
 
+	//NSLog(@"%@",profiles);
 	
 	for (NSMutableDictionary *profile in profiles)
 	{
 		if ([activeProfileName isEqualToString: [profile objectForKey:@"name"]])
 		{
-			NSLog(@"%@",profile);
+			//NSLog(@"%@",profile);
 			
-			brokerRelations = [[profile valueForKey:@"brokerRelations"] floatValue];
-			accounting = [[profile valueForKey:@"accounting"] floatValue];
+			brokerRelations = [[profile valueForKey:@"brokerRelations"] intValue];
+			accounting = [[profile valueForKey:@"accounting"] intValue];
 			corpStanding = [[profile valueForKey:@"corpStanding"] floatValue];
 			factionStanding = [[profile valueForKey:@"factionStanding"] floatValue];
 		}
 	}
 	
+	//NSLog(@"%@",activeProfileName);
 	
-	float totalSalesTax = 1.0 - (accounting*0.1);
+//	NSLog(@"%i,%i,%f,%f",brokerRelations,accounting,corpStanding,factionStanding);
+	
+	float totalSalesTax = 1.0 - ((float)accounting*0.1);
 	
 	float e = 2.71828183;
 	float bfe_part1 = pow(e,(-0.1000 * factionStanding));
 	float bfe_part2 = pow (e,(-0.0400 * corpStanding));
 	
-	float brokers_fee_percentage = (1.000 - 0.05*brokerRelations) * bfe_part1 * bfe_part2;
+	float brokers_fee_percentage = (1.000 - 0.05*(float)brokerRelations) * bfe_part1 * bfe_part2;
 
 	brokersFee = brokers_fee_percentage;
 	salesTax = totalSalesTax;

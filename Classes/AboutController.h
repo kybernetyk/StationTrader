@@ -6,5 +6,6 @@
 
 }
 
-- (IBAction)doTest:(id)sender;
+- (IBAction) visitHomepage:(id)sender;
+- (IBAction) mailSupport:(id)sender;
 @end

@@ -23,35 +23,29 @@
 	
 	NSMutableDictionary *standardProfile = [NSMutableDictionary dictionary];
 	[standardProfile setValue:@"Standard" forKey: @"name"];
-	[standardProfile setValue:[NSNumber numberWithFloat: 0.0f] forKey: @"brokerRelations"];
-	[standardProfile setValue:[NSNumber numberWithFloat: 0.0f] forKey: @"accounting"];
+	[standardProfile setValue:[NSNumber numberWithInt:0] forKey:@"id"];
+	[standardProfile setValue:[NSNumber numberWithInt: 0] forKey: @"brokerRelations"];
+	[standardProfile setValue:[NSNumber numberWithInt: 0] forKey: @"accounting"];
 	[standardProfile setValue:[NSNumber numberWithFloat: 0.0f] forKey: @"corpStanding"];
 	[standardProfile setValue:[NSNumber numberWithFloat: 0.0f] forKey: @"factionStanding"];
 	[profiles addObject: standardProfile];
 
-	standardProfile = [NSMutableDictionary dictionary];
+/*	standardProfile = [NSMutableDictionary dictionary];
 	[standardProfile setValue:@"Jita" forKey: @"name"];
-	[standardProfile setValue:[NSNumber numberWithFloat: 5.0f] forKey: @"brokerRelations"];
-	[standardProfile setValue:[NSNumber numberWithFloat: 5.0f] forKey: @"accounting"];
+	[standardProfile setValue:[NSNumber numberWithInt:1] forKey:@"id"];
+	[standardProfile setValue:[NSNumber numberWithInt: 5] forKey: @"brokerRelations"];
+	[standardProfile setValue:[NSNumber numberWithInt: 5] forKey: @"accounting"];
 	[standardProfile setValue:[NSNumber numberWithFloat: 10.0f] forKey: @"corpStanding"];
 	[standardProfile setValue:[NSNumber numberWithFloat: 10.0f] forKey: @"factionStanding"];
-	[profiles addObject: standardProfile];
+	[profiles addObject: standardProfile];*/
 	
-	NSLog(@"%@",profiles);
+//	NSLog(@"%@",profiles);
 	
 	NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
 	NSDictionary *appDefaults = [NSDictionary dictionaryWithObjectsAndKeys: 
 								 profiles, @"profiles",
 								 @"Standard", @"activeProfile",
 								 
-								//deprecated
-								 @"0.0",@"brokerRelations",
-								 @"0.0",@"accounting",
-								 @"0.0", @"corpStanding", 
-								 @"0.0", @"factionStanding", 
-								 
-								 @"1.0", @"brokersFee",
-								 @"1.0", @"salesTax",
 								 
 								 nil]; 
 	[userDefaults registerDefaults:appDefaults];
@@ -93,6 +87,7 @@
 	[profilesNavigationController setViewControllers: dummyArray];
 	[profilesNavigationController setTitle:@"Profiles"];
 	[[profilesNavigationController navigationBar] setBarStyle: UIBarStyleBlackOpaque];
+
 	[profilesNavigationController setNavigationBarHidden: NO];
 	
 	/*

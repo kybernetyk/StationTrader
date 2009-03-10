@@ -21,14 +21,15 @@
 }
 */
 
-/*
+
 - (void)viewDidLoad {
     [super viewDidLoad];
 
     // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
-    // self.navigationItem.rightBarButtonItem = self.editButtonItem;
+     //self.navigationItem.rightBarButtonItem = self.editButtonItem;
+	[[self navigationItem] setRightBarButtonItem:[self editButtonItem] animated: NO];
 }
-*/
+
 
 /*
 - (void)viewWillAppear:(BOOL)animated {
@@ -59,6 +60,9 @@
 }
 */
 
+#define ADD_CELL_INDEX 1
+#define EDIT_CELL_INDEX 0
+
 - (id)initWithNibName:(NSString *)nibName bundle:(NSBundle *)nibBundle
 {
 	self = [super initWithNibName: nibName bundle: nibBundle];
@@ -67,28 +71,123 @@
 	return self;
 }
 
+- (void)viewWillAppear:(BOOL)animated
+{
+	[theTableView reloadData];
+}
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning]; // Releases the view if it doesn't have a superview
     // Release anything that's not essential, such as cached data
 }
 
-- (void)viewWillAppear:(BOOL)animated
-{
-/*	NSMutableArray *profiles = [[NSUserDefaults standardUserDefaults] objectForKey:@"profiles"];
-    NSString *activeProfile = [[NSUserDefaults standardUserDefaults] objectForKey:@"activeProfile"];
-	
-	
-	for (NSMutableDictionary *profile in profiles)
-	{
-		if ([activeProfile isEqualToString: [profile objectForKey:@"name"]])
-		{
-			NSIndexPath *ip = [NSIndexPath indexPathForRow:0 inSection:0];
 
-			[theTableView selectRowAtIndexPath: ip animated: NO scrollPosition: UITableViewScrollPositionMiddle];
-		}
+- (void)setEditing:(BOOL)editing animated:(BOOL)animated
+{
+	[super setEditing: editing animated: animated];
+
+	
+	if (editing)
+	{
+		[theTableView setEditing: YES animated: YES];
 	}
-*/
+	else
+	{		
+		[theTableView setEditing: NO animated: YES];
+	}
+}
+
+
+- (void) addNewProfile
+{
+
+	NSMutableArray *profiles = [NSMutableArray arrayWithArray: [[NSUserDefaults standardUserDefaults] objectForKey:@"profiles"]];
+	
+	NSString *newName = @"New Profile";
+	BOOL stopCheck = NO;
+	int profileNumber = 2;
+	
+	do
+	{
+		stopCheck = YES;
+		for (NSDictionary *profile in profiles)
+		{
+			NSString *profilename = [profile objectForKey: @"name"];
+			
+			if ([profilename isEqualToString: newName])
+			{
+				newName = [NSString stringWithFormat:@"New Profile %i", profileNumber++];
+				stopCheck = NO;
+			}
+		}
+		
+	} while (stopCheck == NO);
+	
+	NSMutableDictionary *standardProfile = [NSMutableDictionary dictionary];
+	[standardProfile setValue: newName forKey: @"name"];
+	[standardProfile setValue:[NSNumber numberWithInt: [profiles count] + 1] forKey:@"id"];
+	[standardProfile setValue:[NSNumber numberWithFloat: 0.0f] forKey: @"brokerRelations"];
+	[standardProfile setValue:[NSNumber numberWithFloat: 0.0f] forKey: @"accounting"];
+	[standardProfile setValue:[NSNumber numberWithFloat: 0.0f] forKey: @"corpStanding"];
+	[standardProfile setValue:[NSNumber numberWithFloat: 0.0f] forKey: @"factionStanding"];
+	[profiles addObject: standardProfile];
+	
+	
+	[[NSUserDefaults standardUserDefaults] setObject:[NSArray arrayWithArray: profiles] forKey:@"profiles"];
+	[[NSUserDefaults standardUserDefaults] synchronize];
+	
+	[self editProfileAtIndex: [profiles count]-1];
+	
+}
+
+- (void) editProfileAtIndex: (int) index
+{
+	NSMutableArray *profiles = [[NSUserDefaults standardUserDefaults] objectForKey:@"profiles"];
+	NSMutableDictionary *dict = [profiles objectAtIndex: index];
+	NSString *str = [dict objectForKey:@"name"];
+	
+    SetupController *svc = [[SetupController alloc] initWithNibName:@"SetupView" bundle: nil];
+	[svc setTitle: str];
+	[svc setProfileToEdit: str];
+	
+	[[self navigationController] pushViewController: svc animated: YES];
+	[svc release];
+	
+}
+
+- (void) removeProfileAtIndex: (int) index
+{
+	NSMutableArray *profiles = [NSMutableArray arrayWithArray: [[NSUserDefaults standardUserDefaults] objectForKey:@"profiles"]];
+	NSMutableDictionary *dict = [profiles objectAtIndex: index];
+	[profiles removeObject: dict];
+	
+	[[NSUserDefaults standardUserDefaults] setObject:[NSArray arrayWithArray: profiles] forKey:@"profiles"];
+	[[NSUserDefaults standardUserDefaults] synchronize];
+	
+}
+
+- (NSString *) nameForProfileAtIndex: (int) index
+{
+	NSMutableArray *profiles = [[NSUserDefaults standardUserDefaults] objectForKey:@"profiles"];
+	if ([profiles count] <= 0)
+		return nil;
+	
+	NSMutableDictionary *dict = [profiles objectAtIndex: index];
+	NSString *str = [dict objectForKey:@"name"];
+
+	return str;
+}
+
+- (void) setActiveProfile: (NSString *) name
+{
+	[[NSUserDefaults standardUserDefaults] setObject:name forKey:@"activeProfile"];
+	[[NSNotificationCenter defaultCenter] postNotificationName:@"profileChanged" object: nil];
+
+}
+
+- (NSString *) activeProfile
+{
+	return [[NSUserDefaults standardUserDefaults] objectForKey:@"activeProfile"];
 }
 
 #pragma mark Table view methods
@@ -102,32 +201,20 @@
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section 
 {
 	NSArray *profiles = [[NSUserDefaults standardUserDefaults] objectForKey:@"profiles"];
-	return [profiles count];
+	
+	//if ([self isEditing])
+	//	return [profiles count];
+	
+	return [profiles count]+2;
 }
 
 - (void)tableView:(UITableView *)tableView accessoryButtonTappedForRowWithIndexPath:(NSIndexPath *)indexPath
 {
-	NSMutableArray *profiles = [[NSUserDefaults standardUserDefaults] objectForKey:@"profiles"];
-	NSMutableDictionary *dict = [profiles objectAtIndex: [indexPath row]];
-	NSString *str = [dict objectForKey:@"name"];
+	if ([tableView isEditing])
+		return;
 	
-    SetupController *svc = [[SetupController alloc] initWithNibName:@"SetupView" bundle: nil];
-	[svc setTitle: str];
+	[self editProfileAtIndex: [indexPath row]];
 	
-	
-	/* dummyArray = [NSArray arrayWithObject: svc];
-	 
-	 [setupNavigationController setViewControllers: dummyArray];
-	 [setupNavigationController setTitle:@"Setup"];
-	 [[setupNavigationController navigationBar] setBarStyle: UIBarStyleBlackOpaque];
-	 [setupNavigationController setNavigationBarHidden: YES];*/
-	
-	[[self navigationController] pushViewController: svc animated: YES];
-	//[[self parentViewController] pushViewController: svc];
-	
-	NSLog(@"%@",	[self navigationController]);
-	
-	[svc release];
 	
 }
 
@@ -142,36 +229,45 @@
 	{
         //cell = [[[UITableViewCell alloc] initWithFrame:CGRectZero reuseIdentifier:CellIdentifier] autorelease];
 		NSArray *cells = [[NSBundle mainBundle] loadNibNamed:@"TableViewCell" owner:self options: nil];
-		NSLog(@"%@",cells);
+
 		cell = [cells objectAtIndex: 0];
     }
 	
-	NSLog(@"ip: %@",indexPath);
+
     
-	[cell setAccessoryType: UITableViewCellAccessoryDetailDisclosureButton];
-	//[cell setAccessoryAction:@selector(editProfile:)];
 
 	NSMutableArray *profiles = [[NSUserDefaults standardUserDefaults] objectForKey:@"profiles"];
+
+
+	if ([indexPath row] == [profiles count]+EDIT_CELL_INDEX)
+	{
+		[cell setText: @"Edit Profile List ..."];
+		[cell setAccessoryType: UITableViewCellAccessoryNone];
+		return cell;
+	}
+	
+	if ([indexPath row] == [profiles count]+ADD_CELL_INDEX)
+	{
+		[cell setText: @"Add new Profile ..."];
+		[cell setAccessoryType: UITableViewCellAccessoryNone];
+		return cell;
+	}
+	
+	[cell setAccessoryType: UITableViewCellAccessoryDetailDisclosureButton];
+
 	NSMutableDictionary *dict = [profiles objectAtIndex: [indexPath row]];
 	NSString *str = [dict objectForKey:@"name"];
 	
 	NSString *activeProfile = [[NSUserDefaults standardUserDefaults] objectForKey:@"activeProfile"];
-
 	
 	if ([str isEqualToString: activeProfile])
 	{	
-//		[cell setTextColor: [UIColor greenColor]];
 		[cell setText: [NSString stringWithFormat:@"√ %@",str]];
 	}
 	else
 	{
-//		[cell setTextColor: [UIColor darkTextColor]];
 		[cell setText: str];
 	}
-	
-	// Set up the cell...
-
-	
 	
     return cell;
 }
@@ -180,12 +276,32 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath 
 {
 	NSMutableArray *profiles = [[NSUserDefaults standardUserDefaults] objectForKey:@"profiles"];
+
+	if ([indexPath row] == [profiles count]+ADD_CELL_INDEX)
+	{
+		[self addNewProfile];
+		//[tableView setEditing: YES animated: YES];
+		NSIndexPath *ip = [NSIndexPath indexPathForRow:[indexPath row]-ADD_CELL_INDEX inSection:[indexPath section]];
+		NSArray *arr = [NSArray arrayWithObject: ip];
+		[tableView insertRowsAtIndexPaths: arr withRowAnimation: UITableViewRowAnimationLeft];
+		[tableView selectRowAtIndexPath:[NSIndexPath indexPathForRow:[indexPath row]+ADD_CELL_INDEX inSection:[indexPath section]] animated:YES scrollPosition:UITableViewScrollPositionMiddle];
+		[tableView reloadData];
+		
+		return;
+	}
+	
+	if ([indexPath row] == [profiles count]+EDIT_CELL_INDEX)
+	{
+		[self setEditing: YES animated: YES];
+		return;
+	}
+	
+
 	NSMutableDictionary *dict = [profiles objectAtIndex: [indexPath row]];
 	NSString *str = [dict objectForKey:@"name"];
 	
-	[[NSUserDefaults standardUserDefaults] setObject:str forKey:@"activeProfile"];
+	[self setActiveProfile: str];
 	
-	[[NSNotificationCenter defaultCenter] postNotificationName:@"profileChanged" object: nil];
 	[tableView reloadData];
 	
 
@@ -199,28 +315,47 @@
 }
 
 
-/*
+
 // Override to support conditional editing of the table view.
 - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
     // Return NO if you do not want the specified item to be editable.
-    return YES;
+ 	NSMutableArray *profiles = [[NSUserDefaults standardUserDefaults] objectForKey:@"profiles"];
+	
+	if ([indexPath row] >= [profiles count])
+	{
+		return NO;
+	}
+	
+	return YES;
 }
-*/
 
 
-/*
+
+
 // Override to support editing the table view.
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    if (editingStyle == UITableViewCellEditingStyleDelete) {
+    if (editingStyle == UITableViewCellEditingStyleDelete) 
+	{
         // Delete the row from the data source
-        [tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:YES];
+        
+		NSString *profileToRemove = [self nameForProfileAtIndex: [indexPath row]];
+		
+		[self removeProfileAtIndex: [indexPath row]];
+		[tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:YES];
+
+		if ([profileToRemove isEqualToString: [self activeProfile]])
+		{
+			[self setActiveProfile: [self nameForProfileAtIndex: 0]];
+		}
+		
+		[tableView reloadData];
     }   
     else if (editingStyle == UITableViewCellEditingStyleInsert) {
         // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
     }   
 }
-*/
+
 
 
 /*
