@@ -18,7 +18,7 @@
 
 - (IBAction) mailSupport:(id)sender
 {
-	[[UIApplication sharedApplication] openURL: [NSURL URLWithString:@"mailto:support@fluxforge.com?subject=EvE%20Trader%20support"]];
+	[[UIApplication sharedApplication] openURL: [NSURL URLWithString:@"mailto:support@fluxforge.com?subject=Station%20Trader%20support"]];
 }
 
 @end

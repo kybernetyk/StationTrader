@@ -1,0 +1,12 @@
+Have you ever wondered how a station trader manages it to make such an amount of money with so little work? Well, it's all about the math!
+
+But here's the catch: The math is not really simple. There are fees, taxes and fees again that you need to take into account when thinking about a trade. It's not trivial and so many wannabe station traders do the worst they can: They get into 0.01 ISK wars — wasting their time and such they potential income.
+
+With our Station Trader app you don't need to worry about the math. Just enter your buy price, your sell price and see how much money the trade would make you. Don't waste your time with 0.01 ISK wars. Just calculate a good margin you can live with and place your buy/sell orders. People would call this 500.000 ISK wars — but there is no such thing as a 500.000 ISK war. Because the typical 0.01 ISK warrior will get frightened buy such price differences and will wait till your orders are filled.
+
+You may be making less money on each individual trade but in the time you would need to manage a 0.01 ISK battle you can complete 10 orders. At the end of they day you make money. Your competition just wasted their time.
+
+Station Trader will help you generate a passive income of ISK - without the hassle of checking your orders every 5 minutes for 0.01 ISK attacks!
+
+
+Warning: This app is a companion app for CCP Game's "EvE Online" game. To get any use of the app you should have an "EvE Online" account
